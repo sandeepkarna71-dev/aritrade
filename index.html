@@ -4,6 +4,8 @@
 
 <title>AriTrade Exchange</title>
 
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <style>
@@ -13,12 +15,14 @@ font-family:Arial;
 background:#0b0b0b;
 color:white;
 text-align:center;
+margin:0;
 }
 
 header{
 background:#111;
 padding:20px;
 font-size:28px;
+font-weight:bold;
 }
 
 .container{
@@ -26,7 +30,7 @@ margin-top:30px;
 }
 
 button{
-padding:15px 35px;
+padding:14px 30px;
 margin:10px;
 font-size:18px;
 border:none;
@@ -44,27 +48,44 @@ background:#ff1744;
 color:white;
 }
 
+.copy{
+background:#2962ff;
+color:white;
+}
+
 .box{
 background:#1b1b1b;
 padding:20px;
 margin:20px auto;
 border-radius:10px;
-width:300px;
+width:320px;
+box-shadow:0px 0px 10px #000;
 }
 
 input{
 padding:10px;
-width:80%;
-margin:5px;
+width:85%;
+margin:6px;
+border-radius:6px;
+border:none;
 }
 
 #qrcode{
 margin-top:20px;
 }
 
-.copy{
-background:#2962ff;
-color:white;
+.notice{
+color:#aaa;
+font-size:13px;
+margin-top:10px;
+}
+
+footer{
+margin-top:40px;
+padding:15px;
+background:#111;
+color:#777;
+font-size:13px;
 }
 
 </style>
@@ -82,7 +103,7 @@ height:200
 });
 
 document.getElementById("addr").innerText=
-"USDT Address: TXrVXk2ftGzdh1ynBCWsYyKbJaj4dNxGpk";
+"Send USDT to: TXrVXk2ftGzdh1ynBCWsYyKbJaj4dNxGpk";
 
 }
 
@@ -118,9 +139,7 @@ alert("Address copied");
 <body>
 
 <header>
-
 AriTrade Exchange
-
 </header>
 
 <div class="container">
@@ -129,14 +148,14 @@ AriTrade Exchange
 
 <div class="box">
 
-<p>Price</p>
-
+<p>Current Price</p>
 <h3>1 ARI = ₹5</h3>
+
+<p class="notice">Secure QR Payment System</p>
 
 </div>
 
 <button class="buy" onclick="buy()">BUY ARI</button>
-
 <button class="sell" onclick="sell()">SELL ARI</button>
 
 <div id="qrcode"></div>
@@ -151,18 +170,32 @@ AriTrade Exchange
 
 <h3>Order Form</h3>
 
-<input placeholder="Name"><br>
+<form action="mailto:sandeepkarna71@gmail.com" method="post" enctype="text/plain">
 
-<input placeholder="Email"><br>
+<input name="Name" placeholder="Your Name" required><br>
 
-<input placeholder="ARI Amount"><br>
+<input name="Email" placeholder="Email Address" required><br>
 
-<input placeholder="Transaction ID"><br>
+<input name="ARI Amount" placeholder="ARI Amount" required><br>
 
-<button class="buy">Submit Order</button>
+<input name="Transaction ID" placeholder="Transaction ID" required><br>
+
+<button type="submit" class="buy">Submit Order</button>
+
+</form>
+
+<p class="notice">
+After payment submit order with transaction ID.
+</p>
 
 </div>
 
-</body>
+<footer>
 
+© 2026 AriTrade Exchange  
+Secure ARI Coin Trading Platform
+
+</footer>
+
+</body>
 </html>
