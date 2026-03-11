@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate Global USDT Buy/Sell</title>
+<style>
+body {font-family: Arial; background:#0b0b0b; color:#fff; margin:0; padding:0;}
+header {background:#111; padding:20px; text-align:center; font-size:2em; font-weight:bold; color:#ffcc00;}
+.container {padding:20px; max-width:1000px; margin:auto;}
+.currency-box {background:#222; padding:25px; margin-bottom:25px; border-radius:12px;}
+select, input, button {padding:12px; margin:12px 0; width:100%; border-radius:6px; border:none;}
+button {background:#ffcc00; font-weight:bold; cursor:pointer; transition:0.3s;}
+button:hover {background:#e6b800;}
+.result, .dashboard {margin-top:20px; font-size:1.2em; font-weight:bold; color:#00ff99;}
+label {font-weight:bold;}
+h2 {color:#ffcc00;}
+.dashboard {background:#111; padding:15px; border-radius:8px; max-height:300px; overflow-y:auto;}
+.dashboard div {margin-bottom:8px; border-bottom:1px solid #444; padding-bottom:5px;}
+</style>
+</head>
+<body>
+
+<header>Ultimate Global USDT Buy/Sell Platform</header>
+
+<div class="container">
+
+<!-- Buy Section -->
+<div class="currency-box">
+    <h2>Buy USDT (Nepal Only)</h2>
+    <label for="amountBuy">Amount (NPR):</label>
+    <input type="number" id="amountBuy" placeholder="Enter amount to buy">
+
+    <label for="paymentMethod">Payment Method:</label>
+    <select id="paymentMethod">
+        <option value="eSewa">Bank e-Sewa</option>
+        <option value="Khalti">Khalti</option>
+    </select>
+
+    <button onclick="previewBuy()">Preview Order</button>
+    <div class="result" id="buyPreview"></div>
+    <button id="confirmBuyBtn" style="display:none;" onclick="confirmBuy()">Confirm Order</button>
+</div>
+
+<!-- Sell Section -->
+<div class="currency-box">
+    <h2>Sell USDT (Global)</h2>
+    <label for="currencySell">Select Currency:</label>
+    <select id="currencySell">
+        <!-- Filled via JS -->
+    </select>
+
+    <label for="amountSell">Amount:</label>
+    <input type="number" id="amountSell" placeholder="Enter amount to sell">
+
+    <button onclick="sellUSDT()">Preview Sell</button>
+    <div class="result" id="sellPreview"></div>
+    <button id="confirmSellBtn" style="display:none;" onclick="confirmSell()">Confirm Sell</button>
+    <div class="result" id="sellRate"></div>
+</div>
+
+<!-- Dashboard Section -->
+<div class="currency-box">
+    <h2>Recent Transactions</h2>
+    <div class="dashboard" id="dashboard"></div>
+</div>
+
+<!-- EmailJS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+emailjs.init("YOUR_EMAILJS_USER_ID"); // EmailJS User ID
+const USDT_ADDRESS = "TXrVXk2ftGzdh1ynBCWsYyKbJaj4dNxGpk";
+
+// Transaction ID generator
+function generateTxID() {
+    return 'TX-' + Math.random().toString(36).substr(2,9).toUpperCase();
+}
+
+// Dashboard
+function addToDashboard(text) {
+    const dash = document.getElementById('dashboard');
+    const div = document.createElement('div');
+    div.innerText = text;
+    dash.prepend(div);
+}
+// Full 200+ currencies including NPR
+const currencies = [
+"USD","EUR","JPY","GBP","AUD","CAD","CHF","CNY","SEK","NZD","MXN","SGD","HKD","NOK",
+"KRW","TRY","RUB","BRL","ZAR","INR","NPR","AFN","ALL","DZD","AOA","ARS","AMD","AWG","AZN",
+"BAM","BBD","BDT","BGN","BHD","BMD","BND","BOB","BSD","BTN","BWP","BYN","BZD","CDF","CLP",
+"COP","CRC","CUP","CVE","DJF","DKK","DOP","DZD","EGP","ERN","ETB","FJD","FKP","GEL","GHS",
+"GIP","GMD","GNF","GTQ","GYD","HNL","HRK","HTG","HUF","IDR","ILS","IQD","ISK","JMD","JOD",
+"KES","KGS","KHR","KMF","KPW","KWD","KYD","KZT","LAK","LBP","LKR","LRD","LSL","LYD","MAD",
+"MDL","MGA","MKD","MMK","MNT","MOP","MRU","MUR","MVR","MWK","MXN","MYR","MZN","NAD","NGN",
+"NIO","NOK","NPR","NZD","OMR","PAB","PEN","PGK","PHP","PKR","PLN","PYG","QAR","RON","RSD",
+"RUB","RWF","SAR","SBD","SCR","SDG","SEK","SGD","SHP","SLL","SOS","SRD","STN","SVC","SYP",
+"SZL","THB","TJS","TMT","TND","TOP","TRY","TTD","TWD","TZS","UAH","UGX","USD","UYU","UZS",
+"VEF","VND","VUV","WST","XAF","XCD","XOF","XPF","YER","ZMW","ZWL"
+];
+const currencySelect = document.getElementById('currencySell');
+currencies.forEach(c => {
+    const opt = document.createElement('option'); 
+    opt.value = c; 
+    opt.text = c; 
+    currencySelect.appendChild(opt); 
+});
+
+
+// FX API Keys placeholders
+const FX_APIS = {
+    currencyLayer: "YOUR_CURRENCYLAYER_API_KEY",
+    fixer: "YOUR_FIXER_API_KEY",
+    openExchange: "YOUR_OPENEXCHANGE_API_KEY"
+};
+
+// FX rate fetch with fallback
+async function getFXRate(currency) {
+    try {
+        let res = await fetch(`https://api.currencylayer.com/live?access_key=${FX_APIS.currencyLayer}&currencies=${currency}&format=1`);
+        let data = await res.json();
+        if(data.quotes && data.quotes["USD"+currency]) return data.quotes["USD"+currency];
+
+        res = await fetch(`https://data.fixer.io/api/latest?access_key=${FX_APIS.fixer}&symbols=${currency}&format=1`);
+        data = await res.json();
+        if(data.rates && data.rates[currency]) return data.rates[currency];
+
+        res = await fetch(`https://openexchangerates.org/api/latest.json?app_id=${FX_APIS.openExchange}&symbols=${currency}`);
+        data = await res.json();
+        if(data.rates && data.rates[currency]) return data.rates[currency];
+
+        return 1;
+    } catch(err) { return 1; }
+}
+
+// Binance USDT Price
+async function getBinanceUSDT() {
+    try {
+        const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=USDTUSD');
+        const data = await res.json();
+        return parseFloat(data.price);
+    } catch(err) { return 1; }
+}
+
+/* ---------------- Buy Section ---------------- */
+let currentBuyData = {};
+function previewBuy() {
+    const amount = document.getElementById('amountBuy').value;
+    const paymentMethod = document.getElementById('paymentMethod').value;
+    if(!amount || amount<=0){ document.getElementById('buyPreview').innerText="Enter valid amount"; return; }
+    const txID = generateTxID();
+    const country = "Nepal";
+
+    currentBuyData = {amount,paymentMethod,txID,country,type:"Buy"};
+
+    document.getElementById('buyPreview').innerText = 
+    `Preview:\nAmount: ${amount} NPR\nPayment: ${paymentMethod}\nCountry: ${country}\nTransaction ID: ${txID}`;
+    document.getElementById('confirmBuyBtn').style.display="block";
+}
+
+function confirmBuy() {
+    const emailParams = {
+        to_email:"sandeepkarna71@gmail.com",
+        amount: currentBuyData.amount,
+        country: currentBuyData.country,
+        payment_method: currentBuyData.paymentMethod,
+        transaction_id: currentBuyData.txID,
+        type: currentBuyData.type
+    };
+    emailjs.send("YOUR_SERVICE_ID","YOUR_TEMPLATE_ID",emailParams)
+    .then(()=>{
+        document.getElementById('buyPreview').innerText = 
+        `Order Confirmed! Amount: ${currentBuyData.amount} NPR, Payment: ${currentBuyData.paymentMethod}, TXID: ${currentBuyData.txID}`;
+        addToDashboard(`Buy Order: Amount ${currentBuyData.amount} NPR, Payment ${currentBuyData.paymentMethod}, TXID ${currentBuyData.txID}`);
+        document.getElementById('confirmBuyBtn').style.display="none";
+    }).catch(()=>{document.getElementById('buyPreview').innerText="Error sending email";});
+}
+
+/* ---------------- Sell Section ---------------- */
+let currentSellData = {};
+function previewSell() {
+    const amount = document.getElementById('amountSell').value;
+    const currency = document.getElementById('currencySell').value;
+    if(!amount || amount<=0){ document.getElementById('sellPreview').innerText="Enter valid amount"; return; }
+    getFXRate(currency).then(fxRate=>{
+        getBinanceUSDT().then(binRate=>{
+            fetch('https://ipapi.co/json/').then(res=>res.json()).then(data=>{
+                const country = data.country_name || "Unknown";
+                const txID = generateTxID();
+                currentSellData={amount,currency,txID,country,fxRate,binRate,type:"Sell"};
+
+                document.getElementById('sellPreview').innerText =
+                `Preview:\nAmount: ${amount} ${currency}\nCountry: ${country}\nTransaction ID: ${txID}\nUSDT Rate: $${binRate}\nFX Rate: ${fxRate}`;
+                document.getElementById('confirmSellBtn').style.display="block";
+            });
+        });
+    });
+}
+
+function confirmSell(){
+    const emailParams = {
+        to_email:"sandeepkarna71@gmail.com",
+        usdt_address: USDT_ADDRESS,
+        amount: currentSellData.amount,
+        currency: currentSellData.currency,
+        country: currentSellData.country,
+        transaction_id: currentSellData.txID,
+        fx_rate: currentSellData.fxRate,
+        usdt_rate: currentSellData.binRate,
+        type: currentSellData.type
+    };
+    emailjs.send("YOUR_SERVICE_ID","YOUR_TEMPLATE_ID",emailParams)
+    .then(()=>{
+        document.getElementById('sellPreview').innerText = 
+        `Sell Confirmed! Amount: ${currentSellData.amount} ${currentSellData.currency}, TXID: ${currentSellData.txID}, USDT sent to ${USDT_ADDRESS}, Country: ${currentSellData.country}`;
+        addToDashboard(`Sell Order: Amount ${currentSellData.amount} ${currentSellData.currency}, TXID: ${currentSellData.txID}`);
+        document.getElementById('confirmSellBtn').style.display="none";
+    }).catch(()=>{document.getElementById('sellPreview').innerText="Error sending email";});
+}
+document.querySelector("button[onclick='sellUSDT()']").setAttribute("onclick","previewSell()");
+</script>
+</body>
+</html>
