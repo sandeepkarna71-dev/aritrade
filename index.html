@@ -1,257 +1,127 @@
 <!DOCTYPE html>
 <html>
 <head>
-
-<title>AriTrade Exchange</title>
-
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AriTrade Exchange 3D</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <style>
+/* Basic Reset */
+body{font-family:Arial;background:#0b0b0b;color:white;margin:0;text-align:center;overflow-x:hidden;}
+header{background:#111;padding:20px;font-size:26px;position:relative;}
+nav a{color:white;margin:10px;text-decoration:none;font-weight:bold;}
+nav a:hover{color:#00ff9d;transition:0.3s;}
+.container{margin-top:30px;}
+.box{background:#1a1a1a;margin:20px auto;padding:20px;width:320px;border-radius:10px;box-shadow:0 0 20px #000;transition:0.3s;transform-style:preserve-3d;}
+.box:hover{transform:translateY(-10px) rotateX(3deg) rotateY(3deg);box-shadow:0 10px 30px #00ff9d;}
+button{padding:12px 25px;border:none;border-radius:8px;cursor:pointer;margin:5px;transition:0.3s;transform-style:preserve-3d;}
+.buy{background:#00c853;color:white;}
+.buy:hover{transform:translateZ(10px) scale(1.05);box-shadow:0 5px 20px #00c853;}
+.sell{background:#ff1744;color:white;}
+.sell:hover{transform:translateZ(10px) scale(1.05);box-shadow:0 5px 20px #ff1744;}
+.copy{background:#2962ff;color:white;}
+.copy:hover{transform:translateZ(10px) scale(1.05);box-shadow:0 5px 20px #2962ff;}
+input{width:85%;padding:10px;margin:5px;border-radius:6px;border:none;outline:none;transition:0.3s;box-shadow:0 0 5px #000;}
+input:focus{box-shadow:0 0 10px #00ff9d;}
+#qrcode{margin-top:20px;transition:transform 0.5s;}
+.price-glow{color:#00ff9d;text-shadow:0 0 5px #00ff9d,0 0 10px #00ff9d,0 0 20px #00ff9d;}
+footer{background:#111;padding:15px;margin-top:30px;color:#777;}
 
-body{
-font-family:Arial;
-background:#0b0b0b;
-color:white;
-text-align:center;
-margin:0;
-}
-
-header{
-background:#111;
-padding:20px;
-font-size:28px;
-font-weight:bold;
-}
-
-nav{
-margin-top:10px;
-}
-
-nav a{
-color:white;
-margin:10px;
-text-decoration:none;
-font-size:16px;
-}
-
-nav a:hover{
-color:#00c853;
-}
-
-.container{
-margin-top:30px;
-}
-
-button{
-padding:14px 30px;
-margin:10px;
-font-size:18px;
-border:none;
-border-radius:8px;
-cursor:pointer;
-}
-
-.buy{
-background:#00c853;
-color:white;
-}
-
-.sell{
-background:#ff1744;
-color:white;
-}
-
-.copy{
-background:#2962ff;
-color:white;
-}
-
-.box{
-background:#1b1b1b;
-padding:20px;
-margin:20px auto;
-border-radius:10px;
-width:320px;
-box-shadow:0px 0px 10px #000;
-}
-
-input{
-padding:10px;
-width:85%;
-margin:6px;
-border-radius:6px;
-border:none;
-}
-
-#qrcode{
-margin-top:20px;
-}
-
-.notice{
-color:#aaa;
-font-size:13px;
-margin-top:10px;
-}
-
-.faq{
-max-width:600px;
-margin:auto;
-text-align:left;
-}
-
-footer{
-margin-top:40px;
-padding:15px;
-background:#111;
-color:#777;
-font-size:13px;
-}
-
+/* Floating particle background */
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;}
+.particle{position:absolute;background:#00ff9d;width:4px;height:4px;border-radius:50%;animation:move 10s linear infinite;}
+@keyframes move{0%{transform:translateY(0) translateX(0);}100%{transform:translateY(-1200px) translateX(800px);}}
 </style>
 
 <script>
-
+// QR code functions
 function buy(){
-
 document.getElementById("qrcode").innerHTML="";
-
-new QRCode(document.getElementById("qrcode"),{
-text:"TXrVXk2ftGzdh1ynBCWsYyKbJaj4dNxGpk",
-width:200,
-height:200
-});
-
-document.getElementById("addr").innerText=
-"Send USDT to: TXrVXk2ftGzdh1ynBCWsYyKbJaj4dNxGpk";
-
+new QRCode(document.getElementById("qrcode"),{text:"TXrVXk2ftGzdh1ynBCWsYyKbJaj4dNxGpk",width:200,height:200});
+document.getElementById("addr").innerText="Send USDT to: TXrVXk2ftGzdh1ynBCWsYyKbJaj4dNxGpk";
+document.getElementById("walletLabel").innerText="Enter your ARI Wallet Address";
+document.getElementById("walletInput").placeholder="Your ARI Wallet Address";
 }
-
 function sell(){
-
 document.getElementById("qrcode").innerHTML="";
-
-new QRCode(document.getElementById("qrcode"),{
-text:"ARW7yYqW7haQREWNT4Si2gunSqSq1QvbzQ2pkxjjFsmPcwpuW4T3f",
-width:200,
-height:200
-});
-
-document.getElementById("addr").innerText=
-"Send ARI to: ARW7yYqW7haQREWNT4Si2gunSqSq1QvbzQ2pkxjjFsmPcwpuW4T3f";
-
+new QRCode(document.getElementById("qrcode"),{text:"ARW7yYqW7haQREWNT4Si2gunSqSq1QvbzQ2pkxjjFsmPcwpuW4T3f",width:200,height:200});
+document.getElementById("addr").innerText="Send ARI to: ARW7yYqW7haQREWNT4Si2gunSqSq1QvbzQ2pkxjjFsmPcwpuW4T3f";
+document.getElementById("walletLabel").innerText="Enter your USDT TRC20 Address";
+document.getElementById("walletInput").placeholder="Your USDT TRC20 Address";
 }
+function copyAddr(){navigator.clipboard.writeText(document.getElementById("addr").innerText);alert("Address Copied");}
+function calc(){var amount=document.getElementById("amount").value;document.getElementById("priceResult").innerText="Total Price ₹ "+(amount*5);}
+function saveOrder(){var name=document.getElementById("name").value;var wallet=document.getElementById("walletInput").value;var amount=document.getElementById("amount").value;localStorage.setItem("lastOrder",name+" ordered "+amount+" ARI / wallet: "+wallet);alert("Order saved locally");}
+function showHistory(){var order=localStorage.getItem("lastOrder");if(order) alert(order);else alert("No order history");}
 
-function copyAddr(){
-
-var text=document.getElementById("addr").innerText;
-
-navigator.clipboard.writeText(text);
-
-alert("Address copied");
-
+// Floating particles background
+window.onload=function(){
+for(var i=0;i<50;i++){
+var p=document.createElement("div");
+p.className="particle";
+p.style.top=Math.random()*window.innerHeight+"px";
+p.style.left=Math.random()*window.innerWidth+"px";
+p.style.animationDuration=(5+Math.random()*10)+"s";
+p.style.opacity=Math.random();
+document.body.appendChild(p);
 }
-
+}
 </script>
-
 </head>
 
 <body>
 
+<div id="particles"></div>
+
 <header>
-
 AriTrade Exchange
-
 <nav>
-<a href="#">Home</a>
-<a href="#">Buy</a>
-<a href="#">Sell</a>
-<a href="#">FAQ</a>
-<a href="#">Contact</a>
+<a href="#">Home</a><a href="#">Buy</a><a href="#">Sell</a><a href="#">FAQ</a><a href="#">Contact</a>
 </nav>
-
 </header>
 
-<div class="container">
-
-<h2>Buy & Sell ARI Coin</h2>
-
 <div class="box">
-
-<p>Current Price</p>
-<h3>1 ARI = ₹5</h3>
-
-<p class="notice">Secure QR Payment System</p>
-
+<h3 class="price-glow">1 ARI = ₹5</h3>
+<input id="amount" placeholder="ARI Amount">
+<button onclick="calc()">Calculate</button>
+<p id="priceResult" class="price-glow"></p>
 </div>
 
+<div class="box">
 <button class="buy" onclick="buy()">BUY ARI</button>
 <button class="sell" onclick="sell()">SELL ARI</button>
-
 <div id="qrcode"></div>
-
 <p id="addr"></p>
-
 <button class="copy" onclick="copyAddr()">Copy Address</button>
-
 </div>
 
 <div class="box">
-
 <h3>Order Form</h3>
-
 <form action="mailto:sandeepkarna71@gmail.com" method="post" enctype="text/plain">
-
-<input name="Name" placeholder="Your Name" required><br>
-
-<input name="Email" placeholder="Email Address" required><br>
-
-<input name="ARI Amount" placeholder="ARI Amount" required><br>
-
-<input name="ARI Wallet Address" placeholder="Your ARI Wallet Address" required><br>
-
-<input name="Transaction ID" placeholder="Transaction ID" required><br>
-
-<button type="submit" class="buy">Submit Order</button>
-
+<input id="name" placeholder="Name">
+<input placeholder="Email">
+<label id="walletLabel">Enter your ARI Wallet Address</label><br>
+<input id="walletInput" placeholder="Your ARI Wallet Address"><br>
+<input placeholder="Transaction ID">
+<button class="buy" type="submit" onclick="saveOrder()">Submit Order</button>
+<button type="button" onclick="showHistory()">Check Last Order</button>
 </form>
-
-<p class="notice">
-After payment submit order with your ARI wallet address and transaction ID.
-</p>
-
-</div>
-
-<div class="box faq">
-
-<h3>FAQ</h3>
-
-<p><b>How to buy ARI?</b><br>
-Click BUY, send USDT using QR and submit the order form.</p>
-
-<p><b>How to sell ARI?</b><br>
-Send ARI to the wallet address and submit order form.</p>
-
-<p><b>When will I receive ARI?</b><br>
-After payment verification.</p>
-
+<p class="notice">After payment submit order with wallet address and transaction ID.</p>
 </div>
 
 <div class="box">
-
-<h3>Contact</h3>
-
-<p>Email: sandeepkarna71@gmail.com</p>
-
+<h3>FAQ</h3>
+<p><b>How to buy ARI?</b> Send USDT via QR and submit form with your ARI Wallet.</p>
+<p><b>How to sell ARI?</b> Send ARI via QR and submit form with your USDT TRC20 Address.</p>
 </div>
 
-<footer>
+<div class="box">
+<h3>Contact</h3>
+<p>Email: sandeepkarna71@gmail.com</p>
+</div>
 
-© 2026 AriTrade Exchange  
-Secure ARI Coin Trading Platform
-
-</footer>
+<footer>© 2026 AriTrade Exchange</footer>
 
 </body>
 </html>
