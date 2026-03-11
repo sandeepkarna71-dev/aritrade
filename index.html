@@ -25,6 +25,21 @@ font-size:28px;
 font-weight:bold;
 }
 
+nav{
+margin-top:10px;
+}
+
+nav a{
+color:white;
+margin:10px;
+text-decoration:none;
+font-size:16px;
+}
+
+nav a:hover{
+color:#00c853;
+}
+
 .container{
 margin-top:30px;
 }
@@ -78,6 +93,12 @@ margin-top:20px;
 color:#aaa;
 font-size:13px;
 margin-top:10px;
+}
+
+.faq{
+max-width:600px;
+margin:auto;
+text-align:left;
 }
 
 footer{
@@ -139,7 +160,17 @@ alert("Address copied");
 <body>
 
 <header>
+
 AriTrade Exchange
+
+<nav>
+<a href="#">Home</a>
+<a href="#">Buy</a>
+<a href="#">Sell</a>
+<a href="#">FAQ</a>
+<a href="#">Contact</a>
+</nav>
+
 </header>
 
 <div class="container">
@@ -178,6 +209,8 @@ AriTrade Exchange
 
 <input name="ARI Amount" placeholder="ARI Amount" required><br>
 
+<input name="ARI Wallet Address" placeholder="Your ARI Wallet Address" required><br>
+
 <input name="Transaction ID" placeholder="Transaction ID" required><br>
 
 <button type="submit" class="buy">Submit Order</button>
@@ -185,8 +218,31 @@ AriTrade Exchange
 </form>
 
 <p class="notice">
-After payment submit order with transaction ID.
+After payment submit order with your ARI wallet address and transaction ID.
 </p>
+
+</div>
+
+<div class="box faq">
+
+<h3>FAQ</h3>
+
+<p><b>How to buy ARI?</b><br>
+Click BUY, send USDT using QR and submit the order form.</p>
+
+<p><b>How to sell ARI?</b><br>
+Send ARI to the wallet address and submit order form.</p>
+
+<p><b>When will I receive ARI?</b><br>
+After payment verification.</p>
+
+</div>
+
+<div class="box">
+
+<h3>Contact</h3>
+
+<p>Email: sandeepkarna71@gmail.com</p>
 
 </div>
 
