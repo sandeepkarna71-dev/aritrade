@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>AriTrade Exchange</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+
+body{
+font-family:Arial;
+background:#0b0b0b;
+color:white;
+text-align:center;
+}
+
+header{
+background:#111;
+padding:20px;
+font-size:28px;
+}
+
+.container{
+margin-top:30px;
+}
+
+button{
+padding:15px 35px;
+margin:10px;
+font-size:18px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
+
+.buy{
+background:#00c853;
+color:white;
+}
+
+.sell{
+background:#ff1744;
+color:white;
+}
+
+.box{
+background:#1b1b1b;
+padding:20px;
+margin:20px auto;
+border-radius:10px;
+width:300px;
+}
+
+input{
+padding:10px;
+width:80%;
+margin:5px;
+}
+
+#qrcode{
+margin-top:20px;
+}
+
+.copy{
+background:#2962ff;
+color:white;
+}
+
+</style>
+
+<script>
+
+function buy(){
+
+document.getElementById("qrcode").innerHTML="";
+
+new QRCode(document.getElementById("qrcode"),{
+text:"TXrVXk2ftGzdh1ynBCWsYyKbJaj4dNxGpk",
+width:200,
+height:200
+});
+
+document.getElementById("addr").innerText=
+"USDT Address: TXrVXk2ftGzdh1ynBCWsYyKbJaj4dNxGpk";
+
+}
+
+function sell(){
+
+document.getElementById("qrcode").innerHTML="";
+
+new QRCode(document.getElementById("qrcode"),{
+text:"ARW7yYqW7haQREWNT4Si2gunSqSq1QvbzQ2pkxjjFsmPcwpuW4T3f",
+width:200,
+height:200
+});
+
+document.getElementById("addr").innerText=
+"Send ARI to: ARW7yYqW7haQREWNT4Si2gunSqSq1QvbzQ2pkxjjFsmPcwpuW4T3f";
+
+}
+
+function copyAddr(){
+
+var text=document.getElementById("addr").innerText;
+
+navigator.clipboard.writeText(text);
+
+alert("Address copied");
+
+}
+
+</script>
+
+</head>
+
+<body>
+
+<header>
+
+AriTrade Exchange
+
+</header>
+
+<div class="container">
+
+<h2>Buy & Sell ARI Coin</h2>
+
+<div class="box">
+
+<p>Price</p>
+
+<h3>1 ARI = ₹5</h3>
+
+</div>
+
+<button class="buy" onclick="buy()">BUY ARI</button>
+
+<button class="sell" onclick="sell()">SELL ARI</button>
+
+<div id="qrcode"></div>
+
+<p id="addr"></p>
+
+<button class="copy" onclick="copyAddr()">Copy Address</button>
+
+</div>
+
+<div class="box">
+
+<h3>Order Form</h3>
+
+<input placeholder="Name"><br>
+
+<input placeholder="Email"><br>
+
+<input placeholder="ARI Amount"><br>
+
+<input placeholder="Transaction ID"><br>
+
+<button class="buy">Submit Order</button>
+
+</div>
+
+</body>
+
+</html>
